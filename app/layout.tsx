@@ -15,9 +15,9 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'RHEA BEAUTY SHOP',
-  description: 'Premium beauty products — skincare, body, fragrance, lip, hair & accessories.',
-  keywords: 'beauty, skincare, body care, fragrance, lip care, hair care, Uganda',
+  title: 'UWOBA',
+  description: 'UGANDA WOMENS BASKETRY ASSOCIATION',
+  keywords: 'Baskets, Art and Crafts, Uganda',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -130,13 +130,13 @@ export default function HomeClient() {
         {/* Footer */}
         <footer className="px-5 md:px-8 py-8 border-t border-[#EBEBEB]">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <p className="font-mono text-[12px] tracking-[0.2em] uppercase font-bold">RHEA BEAUTY SHOP</p>
+            <p className="font-mono text-[12px] tracking-[0.2em] uppercase font-bold">UWOBA</p>
             <div className="flex gap-6">
               <span className="nav-link">Instagram</span>
               <span className="nav-link">WhatsApp</span>
               <span className="nav-link">TikTok</span>
             </div>
-            <p className="font-mono text-[10px] text-[var(--light)] tracking-wider">© 2025 RHEA BEAUTY SHOP</p>
+            <p className="font-mono text-[10px] text-[var(--light)] tracking-wider">© 2026 UWOBA</p>
           </div>
         </footer>
       </div>

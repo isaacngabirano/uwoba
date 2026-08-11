@@ -1,4 +1,4 @@
-export type Category = 'SKINCARE' | 'BODY' | 'FRAGRANCE' | 'LIP' | 'HAIR' | 'ACCESSORIES';
+export type Category = 'BASKETS' | 'SHOES' | 'CLOTHES' | 'LAMP HOLDER' | 'DECOR' | 'ACCESSORIES';
 
 export interface Product {
   id: string;

@@ -5,7 +5,7 @@ import { formatPrice, CATEGORIES, generateProductCode } from '@/lib/utils';
 
 const EMPTY_FORM = {
   code: '', name: '', description: '', price: '',
-  category: 'BASKETS', stock: '', image_url: '', is_active: true,
+  category: 'SKINCARE', stock: '', image_url: '', is_active: true,
 };
 
 export default function AdminProductsPage() {

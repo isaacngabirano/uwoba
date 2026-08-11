@@ -10,11 +10,11 @@ export function generateOrderNumber(): string {
 }
 
 export const CATEGORIES = [
-  { key: 'SKINCARE', label: 'SKINCARE' },
+  { key: 'BASKETS', label: 'BASKETS' },
   { key: 'BODY', label: 'BODY' },
-  { key: 'FRAGRANCE', label: 'FRAGRANCE' },
-  { key: 'LIP', label: 'LIP' },
-  { key: 'HAIR', label: 'HAIR' },
+  { key: 'SHOES', label: 'SHOES' },
+  { key: 'CRAFT', label: 'CRAFT' },
+  { key: 'HATS', label: 'HATS' },
   { key: 'ACCESSORIES', label: 'ACCESSORIES' },
 ] as const;
 
@@ -23,8 +23,8 @@ export const DELIVERY_FEE = 5000; // UGX 5,000
 // Auto-generate a product code from category + timestamp
 export function generateProductCode(category: string): string {
   const prefixes: Record<string, string> = {
-    SKINCARE: 'SK', BODY: 'BD', FRAGRANCE: 'FR',
-    LIP: 'LP', HAIR: 'HR', ACCESSORIES: 'AC',
+    BASKETS: 'SK', BODY: 'BD', SHOES: 'FR',
+    CRAFT: 'LP', HATS: 'HR', ACCESSORIES: 'AC',
   };
   const prefix = prefixes[category] || 'PR';
   const num = Date.now().toString().slice(-3);

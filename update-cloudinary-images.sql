@@ -14,14 +14,14 @@ UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/uplo
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/honey_balm_rh0uch.avif' WHERE code = 'LP-02';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000458/berry_tint_uf85yd.webp' WHERE code = 'LP-03';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/castor_oil_etwkjy.jpg' WHERE code = 'HR-01';
-UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/hair_butter_g8ti5d.webp' WHERE code = 'HR-02';
+UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/HATS_butter_g8ti5d.webp' WHERE code = 'HR-02';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000458/scalp_oil_wv9gjj.webp' WHERE code = 'HR-03';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/face_roller_lesjeg.webp' WHERE code = 'AC-01';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000456/lash_serum_dg0xqg.webp' WHERE code = 'AC-02';
 UPDATE products SET image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000459/bloom_j5bvtx.webp' WHERE code = 'AC-03';
 
--- Also update the Rose Lip Butter name to match
-UPDATE products SET name = 'Rose Lip Butter', image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000459/bloom_j5bvtx.webp' WHERE code = 'LP-01';
+-- Also update the Rose CRAFT Butter name to match
+UPDATE products SET name = 'Rose CRAFT Butter', image_url = 'https://res.cloudinary.com/dpl464cjn/image/upload/v1774000459/bloom_j5bvtx.webp' WHERE code = 'LP-01';
 
 -- Verify
 SELECT code, name, image_url FROM products ORDER BY code;

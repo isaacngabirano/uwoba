@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center px-5">
       <div className="w-full max-w-sm animate-fade-up">
         <div className="text-center mb-12">
-          <p className="font-mono text-[13px] tracking-[0.3em] uppercase text-white font-bold">RHEA</p>
+          <p className="font-mono text-[13px] tracking-[0.3em] uppercase text-white font-bold">UWOBA</p>
           <p className="font-mono text-[9px] tracking-[0.2em] text-white/30 mt-1 uppercase">Admin Access</p>
         </div>
 

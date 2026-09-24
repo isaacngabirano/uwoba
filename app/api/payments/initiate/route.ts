@@ -1,3 +1,5 @@
+//this is D:\projectss\uwoba\app\api\payments\initiate\route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 
@@ -6,9 +8,18 @@ function formatUgandaPhone(phone: string): string {
   if (cleaned.startsWith('+256')) return cleaned;
   if (cleaned.startsWith('256')) return `+${cleaned}`;
   if (cleaned.startsWith('0')) return `+256${cleaned.slice(1)}`;
-  // bare 9-digit number like 781492406
   return `+256${cleaned}`;
 }
+
+function getMarzProvider(paymentMethod: string): string {
+  // Marz expects 'mtnuganda' or 'airtel' as the mobile_money provider
+  // If you pass method: 'mobile_money' without a provider, Marz auto-detects
+  // from the phone prefix — but being explicit is more reliable.
+  const method = paymentMethod?.toUpperCase();
+  if (method === 'AIRTEL') return 'airtel';
+  return 'mtnuganda'; // MTN and default
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { order_id, payment_method, phone_number, amount } = await req.json();
@@ -17,12 +28,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const MARZ_API_URL = process.env.MARZ_API_URL || 'https://wallet.wearemarz.com/api/v1';
+    const MARZ_API_URL = (process.env.MARZ_API_URL || 'https://wallet.wearemarz.com/api/v1').replace(/\/$/, '');
     const MARZ_BASIC_AUTH = process.env.MARZ_BASIC_AUTH || '';
     const AUTH_HEADER = MARZ_BASIC_AUTH.startsWith('Basic ')
       ? MARZ_BASIC_AUTH
       : `Basic ${MARZ_BASIC_AUTH}`;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://rhea-tan.vercel.app';
+
+    // Strip trailing slash to prevent double-slash in callback URL
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://uwoba.vercel.app').replace(/\/$/, '');
 
     if (!MARZ_BASIC_AUTH) {
       return NextResponse.json({
@@ -36,6 +49,8 @@ export async function POST(req: NextRequest) {
     const reference = crypto.randomUUID();
     const callbackUrl = `${appUrl}/api/payments/webhook`;
 
+    console.log('Callback URL:', callbackUrl); // Verify no double slash
+
     let body: Record<string, any>;
 
     if (payment_method === 'CARD') {
@@ -44,7 +59,7 @@ export async function POST(req: NextRequest) {
         method: 'card',
         reference,
         country: 'UG',
-        description: `Rhea Beauty Shop - Order ${order_id}`,
+        description: `Uwoba - Order ${order_id}`,
         callback_url: callbackUrl,
       };
     } else {
@@ -52,15 +67,17 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Phone number required for mobile money' }, { status: 400 });
       }
       const formattedPhone = formatUgandaPhone(String(phone_number));
-      console.log('Formatted phone:', formattedPhone);
+      const provider = getMarzProvider(payment_method);
+      console.log('Formatted phone:', formattedPhone, '| Provider:', provider);
 
       body = {
         amount: Math.round(amount),
         method: 'mobile_money',
+        provider,                    // Explicit provider: 'mtnuganda' or 'airtel'
         phone_number: formattedPhone,
         reference,
         country: 'UG',
-        description: `Rhea Beauty Shop - Order ${order_id}`,
+        description: `Uwoba - Order ${order_id}`,
         callback_url: callbackUrl,
       };
     }

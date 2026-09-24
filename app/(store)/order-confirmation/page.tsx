@@ -22,7 +22,7 @@ function ConfirmationContent() {
           <p className="font-mono text-[13px] tracking-widest text-[var(--gold)]">{orderNumber}</p>
         )}
         <p className="font-display text-xl font-light text-[var(--mid)] max-w-xs">
-          Thank you for shopping with Rhea Beauty Shop.
+          Thank you for shopping with UWOBA.
         </p>
       </div>
 

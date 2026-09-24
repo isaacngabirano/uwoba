@@ -1,3 +1,5 @@
+//this is D:\projectss\uwoba\app\api\payments\webhook\route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 
@@ -9,7 +11,6 @@ export async function POST(req: NextRequest) {
     const supabase = getServiceSupabase();
     if (!supabase) return NextResponse.json({ received: true });
 
-    // Marz sends transaction data in webhook
     const reference = body?.data?.transaction?.reference || body?.reference;
     const status = body?.data?.transaction?.status || body?.status;
     const marzUuid = body?.data?.transaction?.uuid || body?.uuid;
@@ -19,16 +20,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    // Map Marz status to our status
     const paymentStatus = mapStatus(status);
 
     // Find order by payment_reference or marz_transaction_uuid
-    let query = supabase.from('orders').select('id, order_number, customer_name, customer_phone, total');
+    let query = supabase
+      .from('orders')
+      .select('id, order_number, customer_name, customer_phone, total, payment_method');
 
     if (reference) {
-      // Try as UUID first
-      try { query = query.eq('payment_reference', reference); }
-      catch { query = query.eq('marz_transaction_id', reference); }
+      query = query.eq('payment_reference', reference);
     } else {
       query = query.eq('marz_transaction_uuid', marzUuid);
     }
@@ -41,19 +41,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    // Update order payment status
+    // Update order
     await supabase
       .from('orders')
       .update({
         payment_status: paymentStatus,
-        order_status: paymentStatus === 'PAID' ? 'CONFIRMED' : undefined,
+        ...(paymentStatus === 'PAID' ? { order_status: 'CONFIRMED' } : {}),
         marz_transaction_uuid: marzUuid || undefined,
       })
       .eq('id', order.id);
 
     console.log(`Order ${order.order_number} updated to ${paymentStatus}`);
 
-    // Send WhatsApp if payment confirmed
     if (paymentStatus === 'PAID') {
       await sendWhatsAppNotification(order);
     }
@@ -62,12 +61,11 @@ export async function POST(req: NextRequest) {
 
   } catch (err: any) {
     console.error('Webhook error:', err);
-    // Always return 200 to Marz so they don't retry
     return NextResponse.json({ received: true });
   }
 }
 
-// Also handle GET for redirect-back from card gateway
+// Handle card payment redirect-back
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const reference = searchParams.get('reference');
@@ -84,8 +82,8 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Redirect to order confirmation
-  return Response.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/order-confirmation?ref=${reference}`);
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || '').replace(/\/$/, '');
+  return Response.redirect(`${appUrl}/order-confirmation?ref=${reference}`);
 }
 
 function mapStatus(marzStatus: string): string {
@@ -105,9 +103,32 @@ function mapStatus(marzStatus: string): string {
 async function sendWhatsAppNotification(order: any) {
   const apiKey = process.env.CALLMEBOT_API_KEY;
   const adminPhone = process.env.ADMIN_WHATSAPP_NUMBER;
-  if (!apiKey || !adminPhone) return;
+  if (!apiKey || !adminPhone) {
+    console.warn('WhatsApp not configured — missing CALLMEBOT_API_KEY or ADMIN_WHATSAPP_NUMBER');
+    return;
+  }
 
-  const message = `✅ PAYMENT CONFIRMED — RHEA BEAUTY\n\nOrder: ${order.order_number}\nCustomer: ${order.customer_name}\nPhone: ${order.customer_phone}\nTotal: UGX ${Number(order.total).toLocaleString()}\n\nPayment received successfully.`;
+  const method = order.payment_method || 'Mobile Money';
+  const total = Number(order.total).toLocaleString();
+
+  const message = [
+    `🧺 NEW ORDER — UWOBA`,
+    ``,
+    `Order: ${order.order_number}`,
+    `Customer: ${order.customer_name}`,
+    `Phone: ${order.customer_phone}`,
+    `Total: UGX ${total}`,
+    `Payment: ${method}`,
+    ``,
+    `✅ Payment confirmed. Prepare for delivery.`,
+  ].join('\n');
+
   const url = `https://api.callmebot.com/whatsapp.php?phone=${adminPhone}&text=${encodeURIComponent(message)}&apikey=${apiKey}`;
-  try { await fetch(url); } catch (e) { console.error('WhatsApp failed:', e); }
+
+  try {
+    const res = await fetch(url);
+    console.log('WhatsApp notification sent, status:', res.status);
+  } catch (e) {
+    console.error('WhatsApp notification failed:', e);
+  }
 }

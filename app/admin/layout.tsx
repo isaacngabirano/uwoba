@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
-        <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white font-bold">RHEA</span>
+        <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white font-bold">UWOBA</span>
         <Link href="/" className="font-mono text-[9px] tracking-wider text-white/40 uppercase hover:text-white/70 transition-colors">
           STORE
         </Link>
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       `}>
         <div className="px-6 py-6 border-b border-white/10 flex items-center justify-between">
           <div>
-            <p className="font-mono text-[12px] tracking-[0.25em] uppercase text-white font-bold">RHEA</p>
+            <p className="font-mono text-[12px] tracking-[0.25em] uppercase text-white font-bold">UWOBA</p>
             <p className="font-mono text-[9px] tracking-wider text-white/40 mt-0.5 uppercase">Admin Panel</p>
           </div>
           <button onClick={() => setSidebarOpen(false)}
